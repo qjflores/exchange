@@ -1,9 +1,11 @@
 var Exchange = artifacts.require("./Exchange.sol");
 var Supplier = artifacts.require("./Supplier.sol");
 var Order = artifacts.require("./Order.sol");
+var Web3 = require('web3');
 
 contract('Exchange', function(accounts){
   var exchange;
+  var balance = (acct) => {return web3.fromWei(web3.eth.getBalance(acct), 'ether').toNumber() }
   it('should-init-with-owner', function(){
     var _owner = accounts[0];
     //TODO change this to msg.sender, otherwise anyone
@@ -36,6 +38,10 @@ contract('Exchange', function(accounts){
         } else {
           throw new Error('no contract address')
         }
+        return true
+      })
+      .then(function(value){
+        assert.equal(10, balance(supplier.address))
         return true
       })
       .then(function(value){
