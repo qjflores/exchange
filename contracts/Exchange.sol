@@ -4,7 +4,10 @@ import "./Supplier.sol";
 
 contract Exchange {
   address public owner;
-  mapping (bytes32 => address) supplierListed;
+  uint public currentTicket; // the next ticket to be served once an order has come in
+  uint public recentTicket; // the ticket most in the future to serve the order
+
+  mapping (bytes32 => address) supplierListed; // NOTE: This mapping might not be necessary
 
 
   struct Order {
@@ -14,16 +17,26 @@ contract Exchange {
     address contractAddress;
   }
 
+  struct supplier {
+    uint ticket;
+    address contractAddress;
+  }
+
   mapping (address => Order) orders;
+  mapping (uint => address) public supplierQueue;
 
   function Exchange(address _owner){
     owner = _owner;
+    currentTicket = 0;
+    recentTicket = 0;
   }
 
   function enlist(address supplierContractAddress) {
     Supplier supplierContract = Supplier(supplierContractAddress);
     bytes32 supplierNameBytes = supplierContract.getSupplierNameBytes();
     supplierListed[supplierNameBytes] = supplierContractAddress;
+    recentTicket = recentTicket + 1;
+    supplierQueue[recentTicket] = supplierContractAddress;
     Enlisted(supplierContractAddress);
   }
 
