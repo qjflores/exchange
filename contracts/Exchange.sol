@@ -43,6 +43,7 @@ contract Exchange {
   function registerOrder(address _orderContractAddress) {
     orders[_orderContractAddress].state = "received";
     orders[_orderContractAddress].contractAddress = _orderContractAddress;
+    currentTicket = currentTicket + 1;
   }
 
   function isExistByBytes(bytes32 supplierNameBytes) constant returns (bool result) {

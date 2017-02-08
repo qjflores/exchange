@@ -1,5 +1,6 @@
 var Exchange = artifacts.require("./Exchange.sol");
 var Supplier = artifacts.require("./Supplier.sol");
+var Order = artifacts.require("./Order.sol");
 
 contract("Supplier", function(accounts){
   var supplier1Address = accounts[4];
@@ -10,6 +11,8 @@ contract("Supplier", function(accounts){
   it('init-2-supplier-contracts-and-enlist-with-exchange', function(){
     var exchange;
     var _owner = accounts[0];
+    var order;
+    var _customer = accounts[1];
     return Exchange.new(_owner)
       .then(function(exchangeContract) {
         if(exchangeContract.address) {
@@ -25,7 +28,7 @@ contract("Supplier", function(accounts){
       })
       .then(function(currentTicket){
         assert.equal(0, currentTicket);
-        })
+      })
       .then(function(value){
         Supplier.new(supplier1Address, "supplier 1",
           {from: supplier1Address,value:web3.toWei(10, "ether")})
@@ -69,10 +72,30 @@ contract("Supplier", function(accounts){
           assert.equal(supplierAddress,supplier2.address);
         })
       })
+      return true;
     })
-    
+    //test that the new order contract updates the current ticket on the exchange
     .then(function(value){
-      //create a new order contract
+      console.log("create a new order contract");
+      var _amount = web3.toWei(5,"ether");
+      return Order.new(_customer,_amount)
+      .then(function(orderContract) {
+        if(orderContract.address) {
+          order = orderContract;
+        } else {
+          throw new Error('no contract address');
+        }
+        return true;
+      })
+      .then(function(value){
+        return order.registerOrder(exchange.address);
+      })
+      .then(function(txHash) {
+        return exchange.currentTicket.call()
+      })
+      .then(function(currentTicket){
+        assert.equal(1, currentTicket);
+      })
     })
   })
 })

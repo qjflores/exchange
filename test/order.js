@@ -27,7 +27,7 @@ contract('Order', function(accounts){
   })
   it('init order contract with the deliveryAddress and amount', function(){
     var _deliveryAddress = accounts[3];
-    var _amount = 5; //ether
+    var _amount = web3.toWei(5,"ether"); //ether
     return Order.new(_deliveryAddress, _amount)
       .then(function(orderContract) {
         if(orderContract.address) {
@@ -42,7 +42,7 @@ contract('Order', function(accounts){
       assert.equal(_deliveryAddress,dAddress)
       return order.amount.call()
     }).then(function(amount){
-      assert.equal(5, amount)
+      assert.equal(5000000000000000000, amount.toNumber())
     });
   })
 

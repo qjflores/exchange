@@ -5,10 +5,10 @@ import "./Exchange.sol";
 contract Order {
   address public deliveryAddress;
   address public supplierAddress;
-  uint public amount;
+  uint256 public amount;
   string public state;
 
-  function Order(address _deliveryAddress, uint _amount) {
+  function Order(address _deliveryAddress, uint256 _amount) {
     state = "receivedOrder";
     amount = _amount;
     deliveryAddress = _deliveryAddress;
