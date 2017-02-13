@@ -29,7 +29,7 @@ contract('Exchange', function(accounts){
     var supplier;
     var supplierAddress = accounts[1];
     var supplierName = "Supplier1";
-    return Supplier.new(supplierAddress, supplierName, {supplierAddress, value:web3.toWei(10,"ether")})
+    return Supplier.new(supplierAddress, supplierName, {supplierAddress, value:web3.toWei(10)})
       .then(function(supplierContract) {
         if(supplierContract.address) {
           supplier = supplierContract;

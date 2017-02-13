@@ -27,8 +27,8 @@ contract('Order', function(accounts){
   })
   it('init order contract with the deliveryAddress and amount', function(){
     var _deliveryAddress = accounts[3];
-    var _amount = web3.toWei(5,"ether"); //ether
-    return Order.new(_deliveryAddress, _amount)
+    var _amount = web3.toWei(1);
+    return Order.new(_amount,{from:_deliveryAddress})
       .then(function(orderContract) {
         if(orderContract.address) {
           order = orderContract;
@@ -42,7 +42,7 @@ contract('Order', function(accounts){
       assert.equal(_deliveryAddress,dAddress)
       return order.amount.call()
     }).then(function(amount){
-      assert.equal(5000000000000000000, amount.toNumber())
+      assert.equal(1000000000000000000, amount.toNumber())
     });
   })
 
@@ -54,7 +54,7 @@ contract('Order', function(accounts){
       })
     //then register the order with the exchange
       .then(function(){
-        return order.registerOrder(exchange.address);
+        return order.registerOrder(exchange.address, web3.toWei(0.05));
       }).then(function(txHash){
         return exchange.isOrderExistByAddress(order.address)
       })

@@ -4,14 +4,13 @@ import "./Exchange.sol";
 
 contract Order {
   address public deliveryAddress;
-  address public supplierAddress;
   uint256 public amount;
   string public state;
 
-  function Order(address _deliveryAddress, uint256 _amount) {
+  function Order(uint256 _amount) {
     state = "receivedOrder";
     amount = _amount;
-    deliveryAddress = _deliveryAddress;
+    deliveryAddress = msg.sender;
   }
 
   function receivedPaymentConfirmation() returns (string) {
@@ -19,13 +18,9 @@ contract Order {
     return state;
   }
 
-  function registerOrder(address exchangeCantractAddress) {
+  function registerOrder(address exchangeCantractAddress, uint256 _amount) {
     Exchange exchangeContract = Exchange(exchangeCantractAddress);
-    exchangeContract.registerOrder(this);
+    exchangeContract.registerOrder(deliveryAddress, _amount);
   }
 
-  function getSupplierAddressFromExchange() returns (address) {
-    //TODO figure out a way to mask this
-    return supplierAddress;
-  }
 }
